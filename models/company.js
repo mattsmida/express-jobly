@@ -73,7 +73,24 @@ class Company {
    * */
 
   static async search(query) {
+    console.log('running search');
+    console.log('query', query);
+
     const { minEmployees, maxEmployees, nameLike } = query;
+    console.log('minEmployees', minEmployees);
+    console.log('maxEmployees', maxEmployees);
+    console.log('nameLike', nameLike);
+
+    let filters = [];
+    if (minEmployees !== undefined) {
+      filters.append(`num_employees >= $1`)
+    }
+    if (maxEmployees !== undefined) {
+      filters.append(`num_employees <= $2`)
+    }
+    if (nameLike !== undefined) {
+      filters.append(`name ILIKE $3`)
+    }
 
     const companiesRes = await db.query(`
         SELECT handle,
@@ -82,9 +99,9 @@ class Company {
                num_employees AS "numEmployees",
                logo_url      AS "logoUrl"
         FROM companies
-        WHERE num_employees >= $1 AND
-              num_employees <= $2 AND
-              name ILIKE $3
+        WHERE ${filters[0]} AND
+              ${filters[1]} AND
+              ${filters[2]}
         ORDER BY name`, [minEmployees, maxEmployees, `%${nameLike}%`]);
         // TODO: Continue with this query -- careful with WHERE clause, etc.
     return companiesRes.rows;

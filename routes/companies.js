@@ -28,7 +28,7 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
   const validator = jsonschema.validate(
     req.body,
     companyNewSchema,
-    {required: true}
+    { required: true }
   );
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
@@ -51,12 +51,29 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  */
 
 router.get("/", async function (req, res, next) {
-  console.log('running get companies, query:', req.query)
+  console.log('running get companies, query:', req.query);
 
-  if (req.query === undefined) {
-    const companies = await Company.findAll();
-  } else {
-    const companies = await Company.search(req.query);
+  let companies;
+  const queryParams = Object.keys(req.query);
+  console.log('query params:', queryParams);
+
+  if (queryParams.length === 0) {
+    companies = await Company.findAll();
+  }
+
+  else {
+    const allowedFilters = ['nameLike', 'minEmployees', 'maxEmployees'];
+    const nonallowedFilters = queryParams.filter(
+      param => !allowedFilters.includes(param)
+    );
+
+    if (nonallowedFilters.length > 0) {
+      throw new BadRequestError(
+        "Allowed search fields: nameLike, minEmployees, maxEmployees"
+      );
+    }
+
+    companies = await Company.search(req.query);
   }
 
   return res.json({ companies });
@@ -90,7 +107,7 @@ router.patch("/:handle", ensureLoggedIn, async function (req, res, next) {
   const validator = jsonschema.validate(
     req.body,
     companyUpdateSchema,
-    {required:true}
+    { required: true }
   );
   if (!validator.valid) {
     const errs = validator.errors.map(e => e.stack);
