@@ -87,6 +87,28 @@ describe("findAll", function () {
   });
 });
 
+/************************************** search */
+
+describe("search", function () {
+  test("works: with filter", async function () {
+    const query = {
+      nameLike: '1',
+      minEmployees: 1,
+      maxEmployees: 1
+    };
+    let companies = await Company.search(query);
+    expect(companies).toEqual([
+      {
+        handle: "c1",
+        name: "C1",
+        description: "Desc1",
+        numEmployees: 1,
+        logoUrl: "http://c1.img",
+      },
+    ]);
+  });
+});
+
 /************************************** get */
 
 describe("get", function () {

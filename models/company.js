@@ -72,7 +72,8 @@ class Company {
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
-  static async search(searchParams) {
+  static async search(query) {
+    const { minEmployees, maxEmployees, nameLike } = query;
 
     const companiesRes = await db.query(`
         SELECT handle,
@@ -81,9 +82,9 @@ class Company {
                num_employees AS "numEmployees",
                logo_url      AS "logoUrl"
         FROM companies
-        WHERE num_employees >= $1,
-              num_employees <= $2,
-              name ILIKE $3,
+        WHERE num_employees >= $1 AND
+              num_employees <= $2 AND
+              name ILIKE $3
         ORDER BY name`, [minEmployees, maxEmployees, `%${nameLike}%`]);
         // TODO: Continue with this query -- careful with WHERE clause, etc.
     return companiesRes.rows;
