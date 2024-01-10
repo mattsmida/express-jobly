@@ -82,7 +82,7 @@ class Company {
                logo_url      AS "logoUrl"
         FROM companies
         WHERE num_employees >= $1,
-              num_employees <= $2
+              num_employees <= $2,
               name ILIKE $3,
         ORDER BY name`, [minEmployees, maxEmployees, `%${nameLike}%`]);
         // TODO: Continue with this query -- careful with WHERE clause, etc.
