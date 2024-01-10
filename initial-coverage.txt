@@ -1,0 +1,73 @@
+Connected to postgresql:///jobly_test
+POST /users 201 279 - 8.976 ms
+POST /users 201 277 - 4.834 ms
+POST /users 401 49 - 0.648 ms
+POST /users 400 202 - 1.994 ms
+POST /users 400 94 - 1.645 ms
+GET /users 200 293 - 2.561 ms
+GET /users 401 49 - 0.377 ms
+GET /users/u1 200 102 - 1.833 ms
+GET /users/u1 401 49 - 0.311 ms
+GET /users/nope 404 50 - 1.608 ms
+PATCH /users/u1 200 102 - 2.040 ms
+PATCH /users/u1 401 49 - 0.277 ms
+PATCH /users/nope 404 50 - 2.553 ms
+PATCH /users/u1 400 84 - 1.551 ms
+PATCH /users/u1 200 102 - 3.064 ms
+DELETE /users/u1 200 16 - 1.567 ms
+DELETE /users/u1 401 49 - 0.791 ms
+DELETE /users/nope 404 50 - 1.356 ms
+Connected to postgresql:///jobly_test
+POST /auth/token 200 160 - 5.276 ms
+POST /auth/token 401 62 - 2.198 ms
+POST /auth/token 401 62 - 2.878 ms
+POST /auth/token 400 78 - 1.364 ms
+POST /auth/token 400 83 - 0.961 ms
+POST /auth/register 201 161 - 4.312 ms
+POST /auth/register 400 202 - 1.437 ms
+POST /auth/register 400 94 - 0.808 ms
+Connected to postgresql:///jobly_test
+POST /companies 201 110 - 6.090 ms
+POST /companies 400 119 - 2.378 ms
+POST /companies 400 94 - 1.825 ms
+GET /companies 200 294 - 0.925 ms
+GET /companies/c1 200 104 - 0.824 ms
+GET /companies/c2 200 104 - 0.640 ms
+GET /companies/nope 404 53 - 0.698 ms
+PATCH /companies/c1 200 108 - 3.267 ms
+PATCH /companies/c1 401 49 - 0.397 ms
+PATCH /companies/nope 404 53 - 2.105 ms
+PATCH /companies/c1 400 105 - 1.802 ms
+PATCH /companies/c1 400 94 - 2.183 ms
+DELETE /companies/c1 200 16 - 1.693 ms
+DELETE /companies/c1 401 49 - 0.441 ms
+DELETE /companies/nope 404 53 - 1.674 ms
+GET /no-such-path 404 46 - 1.402 ms
+Connected to postgresql:///jobly_test
+GET /no-such-path 404 46 - 25.177 ms
+Connected to postgresql:///jobly_test
+Connected to postgresql:///jobly_test
+--------------------------|---------|----------|---------|---------|-------------------
+File                      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+--------------------------|---------|----------|---------|---------|-------------------
+All files                 |   99.63 |    96.66 |   98.03 |   99.61 |                   
+ express-jobly            |   98.03 |    88.88 |   88.88 |      98 |                   
+  app.js                  |     100 |      100 |     100 |     100 |                   
+  config.js               |     100 |      100 |     100 |     100 |                   
+  db.js                   |     100 |      100 |     100 |     100 |                   
+  expressError.js         |    87.5 |       50 |      80 |    87.5 | 45                
+ express-jobly/helpers    |     100 |      100 |     100 |     100 |                   
+  sql.js                  |     100 |      100 |     100 |     100 |                   
+  tokens.js               |     100 |      100 |     100 |     100 |                   
+ express-jobly/middleware |     100 |      100 |     100 |     100 |                   
+  auth.js                 |     100 |      100 |     100 |     100 |                   
+ express-jobly/models     |     100 |      100 |     100 |     100 |                   
+  _testCommon.js          |     100 |      100 |     100 |     100 |                   
+  company.js              |     100 |      100 |     100 |     100 |                   
+  user.js                 |     100 |      100 |     100 |     100 |                   
+ express-jobly/routes     |     100 |      100 |     100 |     100 |                   
+  _testCommon.js          |     100 |      100 |     100 |     100 |                   
+  auth.js                 |     100 |      100 |     100 |     100 |                   
+  companies.js            |     100 |      100 |     100 |     100 |                   
+  users.js                |     100 |      100 |     100 |     100 |                   
+--------------------------|---------|----------|---------|---------|-------------------
