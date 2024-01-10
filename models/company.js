@@ -67,6 +67,28 @@ class Company {
     return companiesRes.rows;
   }
 
+  /** Search for companies based on user's query.
+   *
+   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
+   * */
+
+  static async search(searchParams) {
+
+    const companiesRes = await db.query(`
+        SELECT handle,
+               name,
+               description,
+               num_employees AS "numEmployees",
+               logo_url      AS "logoUrl"
+        FROM companies
+        WHERE num_employees >= $1,
+              num_employees <= $2
+              name ILIKE $3,
+        ORDER BY name`, [minEmployees, maxEmployees, `%${nameLike}%`]);
+        // TODO: Continue with this query -- careful with WHERE clause, etc.
+    return companiesRes.rows;
+  }
+
   /** Given a company handle, return data about company.
    *
    * Returns { handle, name, description, numEmployees, logoUrl, jobs }
