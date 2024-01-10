@@ -136,6 +136,23 @@ describe("GET /companies", function () {
       }
     });
   });
+
+  test("errors: with minEmployees greater than max", async function () {
+    const resp = await request(app)
+      .get("/companies")
+      .query({
+          nameLike: '1',
+          minEmployees: 3,
+          maxEmployees: 1,
+      });
+
+    expect(resp.body).toEqual({
+      "error": {
+        "message": "minEmployees cannot be greater than maxEmployees",
+        "status": 400
+      }
+    });
+  });
 });
 
 /************************************** GET /companies/:handle */

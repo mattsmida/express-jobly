@@ -55,7 +55,6 @@ router.get("/", async function (req, res, next) {
 
   let companies;
   const queryParams = Object.keys(req.query);
-  console.log('query params:', queryParams);
 
   if (queryParams.length === 0) {
     companies = await Company.findAll();
@@ -71,6 +70,14 @@ router.get("/", async function (req, res, next) {
       throw new BadRequestError(
         "Allowed search fields: nameLike, minEmployees, maxEmployees"
       );
+    }
+
+    if ('minEmployees' in req.query && 'maxEmployees' in req.query
+      && req.query.minEmployees > req.query.maxEmployees) {
+
+        throw new BadRequestError(
+          "minEmployees cannot be greater than maxEmployees"
+        )
     }
 
     companies = await Company.search(req.query);
