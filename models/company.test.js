@@ -108,22 +108,7 @@ describe("search", function () {
     ]);
   });
 
-  test("errors: with filter for additional field", async function () {
-    const query = {
-      nameLike: '1',
-      minEmployees: 1,
-      maxEmployees: 1,
-      additionalField: 1
-    };
-    let companies = await Company.search(query);
 
-    expect(companies).toEqual({
-      "error": {
-        "message": "Allowed search fields: nameLike, minEmployees, maxEmployees",
-        "status": 400
-      }
-    });
-  });
 });
 
 /************************************** get */

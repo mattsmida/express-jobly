@@ -76,21 +76,28 @@ class Company {
     console.log('running search');
     console.log('query', query);
 
-    const { minEmployees, maxEmployees, nameLike } = query;
-    console.log('minEmployees', minEmployees);
-    console.log('maxEmployees', maxEmployees);
-    console.log('nameLike', nameLike);
 
+    let filterMap = {
+      'minEmployees': 'num_employees >= $',
+      'maxEmployees': 'num_employees <= $',
+      'nameLike': 'name ILIKE $'
+    };
+
+    // query = {'minEmployees': 1, 'nameLike': 'ABCco'};
+    let filterCount = 1;
     let filters = [];
-    if (minEmployees !== undefined) {
-      filters.append(`num_employees >= $1`)
+    let filterValues = [];
+    for (let filter in query) {
+      filters.push(`${filterMap[filter]}${filterCount}`);
+      if (filter === 'nameLike') {
+        filterValues.push(`%${query[filter]}%`);
+      } else {
+        filterValues.push(query[filter]);
+      }
+      filterCount++;
     }
-    if (maxEmployees !== undefined) {
-      filters.append(`num_employees <= $2`)
-    }
-    if (nameLike !== undefined) {
-      filters.append(`name ILIKE $3`)
-    }
+
+    const filterString = filters.join('AND ');
 
     const companiesRes = await db.query(`
         SELECT handle,
@@ -99,10 +106,8 @@ class Company {
                num_employees AS "numEmployees",
                logo_url      AS "logoUrl"
         FROM companies
-        WHERE ${filters[0]} AND
-              ${filters[1]} AND
-              ${filters[2]}
-        ORDER BY name`, [minEmployees, maxEmployees, `%${nameLike}%`]);
+        WHERE ${filterString}
+        ORDER BY name`, filterValues);
         // TODO: Continue with this query -- careful with WHERE clause, etc.
     return companiesRes.rows;
   }
