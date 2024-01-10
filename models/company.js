@@ -69,35 +69,37 @@ class Company {
 
   /** Search for companies based on user's query.
    *
+   * Input query object with at least one of following keys:
+   * { minEmployees, maxEmployees, nameLike }
+   *
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
-   * */
+   */
 
   static async search(query) {
     console.log('running search');
     console.log('query', query);
 
-
-    let filterMap = {
+    const filterToClause = {
       'minEmployees': 'num_employees >= $',
       'maxEmployees': 'num_employees <= $',
       'nameLike': 'name ILIKE $'
     };
 
-    // query = {'minEmployees': 1, 'nameLike': 'ABCco'};
-    let filterCount = 1;
-    let filters = [];
-    let filterValues = [];
-    for (let filter in query) {
-      filters.push(`${filterMap[filter]}${filterCount}`);
-      if (filter === 'nameLike') {
-        filterValues.push(`%${query[filter]}%`);
-      } else {
-        filterValues.push(query[filter]);
-      }
-      filterCount++;
+    if ('nameLike' in query) {
+      query.nameLike = `%${query.nameLike}%`
     }
 
-    const filterString = filters.join('AND ');
+    const filters = {
+      clauses: [],
+      values: []
+    }
+
+    let filterCount = 1;
+    for (const filter in query) {
+      filters.clauses.push(`${filterToClause[filter]}${filterCount}`);
+      filters.values.push(query[filter]);
+      filterCount++;
+    }
 
     const companiesRes = await db.query(`
         SELECT handle,
@@ -106,9 +108,8 @@ class Company {
                num_employees AS "numEmployees",
                logo_url      AS "logoUrl"
         FROM companies
-        WHERE ${filterString}
-        ORDER BY name`, filterValues);
-        // TODO: Continue with this query -- careful with WHERE clause, etc.
+        WHERE ${filters.clauses.join('AND ')}
+        ORDER BY name`, filters.values);
     return companiesRes.rows;
   }
 
