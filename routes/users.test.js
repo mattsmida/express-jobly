@@ -249,6 +249,13 @@ describe("GET /users/:username", function () {
       .set("authorization", `Bearer ${a1Token}`);
     expect(resp.statusCode).toEqual(404);
   });
+
+  test("unauth for non-admin user looking for DNE user", async function () {
+    const resp = await request(app)
+      .get(`/users/nope`)
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
 });
 
 /************************************** PATCH /users/:username */
@@ -272,7 +279,7 @@ describe("PATCH /users/:username", () => {
     });
   });
 
-  test("disallows non-admin user changes of another's info", async function () {
+  test("unauth for non-admin user to change another's info", async function () {
     const resp = await request(app)
       .patch(`/users/u2`)
       .send({
@@ -300,9 +307,6 @@ describe("PATCH /users/:username", () => {
     });
   });
 
-
-
-
   test("unauth for anon", async function () {
     const resp = await request(app)
       .patch(`/users/u1`)
@@ -322,7 +326,17 @@ describe("PATCH /users/:username", () => {
     expect(resp.statusCode).toEqual(404);
   });
 
-  test("bad request if invalid data", async function () {
+  test("unauth if no such user (as another user)", async function () {
+    const resp = await request(app)
+      .patch(`/users/nope`)
+      .send({
+        firstName: "Nope",
+      })
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("bad request if invalid data as the user", async function () {
     const resp = await request(app)
       .patch(`/users/u1`)
       .send({
@@ -366,6 +380,13 @@ describe("DELETE /users/:username", function () {
   test("unauth for user trying to delete another user", async function () {
     const resp = await request(app)
       .delete(`/users/u2`)
+      .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("unauth for user trying to delete a DNE user", async function () {
+    const resp = await request(app)
+      .delete(`/users/nope`)
       .set("authorization", `Bearer ${u1Token}`);
     expect(resp.statusCode).toEqual(401);
   });
