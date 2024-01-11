@@ -1,0 +1,29 @@
+6 results - 5 files
+
+helpers/sql.test.js:
+  51  // - One value submitted
+  52: // TODO:
+
+models/company.js:
+  76     */
+  77:   // TODO:
+  78    // Could make the where clause its own separate piece.
+
+models/company.test.js:
+  165  
+  166:   // TODO:
+  167    // We have all the success cases.
+
+  173  
+  174:   // TODO: Do a test where you get no results back
+  175  });
+
+routes/companies.js:
+  85  
+  86:   // TODO: Could use json schema validation here!
+  87    // Cannot currently have > 1 error at the same time.
+
+routes/companies.test.js:
+  157  
+  158: // TODO: Another test for e.g., only nameLike (a partial query)
+  159  // Could also do one with multiple errors if we were using json schema val'n

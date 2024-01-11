@@ -85,18 +85,14 @@ describe("findAll", function () {
       },
     ]);
   });
-});
 
-/************************************** search */
-
-describe("search", function () {
   test("works: with all filters", async function () {
     const query = {
       nameLike: '1',
       minEmployees: 1,
       maxEmployees: 1
     };
-    let companies = await Company.search(query);
+    let companies = await Company.findAll(query);
     expect(companies).toEqual([
       {
         handle: "c1",
@@ -112,7 +108,7 @@ describe("search", function () {
     const query = {
       nameLike: 'c'
     };
-    let companies = await Company.search(query);
+    let companies = await Company.findAll(query);
     expect(companies).toEqual([
       {
         handle: "c1",
@@ -143,7 +139,7 @@ describe("search", function () {
       maxEmployees: 3,
       minEmployees: 2
     };
-    let companies = await Company.search(query);
+    let companies = await Company.findAll(query);
     expect(companies).toEqual([
       {
         handle: "c2",

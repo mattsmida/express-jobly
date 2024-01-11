@@ -38,12 +38,12 @@ class Company {
                     description,
                     num_employees AS "numEmployees",
                     logo_url AS "logoUrl"`, [
-          handle,
-          name,
-          description,
-          numEmployees,
-          logoUrl,
-        ],
+      handle,
+      name,
+      description,
+      numEmployees,
+      logoUrl,
+    ],
     );
     const company = result.rows[0];
 
@@ -52,39 +52,27 @@ class Company {
 
   /** Find all companies.
    *
-   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
-   * */
-
-  static async findAll() {
-    const companiesRes = await db.query(`
-        SELECT handle,
-               name,
-               description,
-               num_employees AS "numEmployees",
-               logo_url      AS "logoUrl"
-        FROM companies
-        ORDER BY name`);
-    return companiesRes.rows;
-  }
-
-  /** Search for companies based on user's query.
+   * Optional: Search for companies based on user's query.
    *
-   * Input query object with at least one of following keys:
+   * Optional input query object with at least one of following keys:
    * { minEmployees, maxEmployees, nameLike }
    *
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
-   */
+   * */
 
-  static async search(query) {
-    console.log('running search');
-    console.log('query', query);
-
+  static async findAll(query) {
+    let whereClause = '';
+    const filters = {
+      clauses: [],
+      values: []
+    };
     const filterToClause = {
       'minEmployees': 'num_employees >= $',
       'maxEmployees': 'num_employees <= $',
       'nameLike': 'name ILIKE $'
     };
 
+<<<<<<< HEAD
     // Add wildcards for the necessary nameLike clause
     if ('nameLike' in query) {
       query.nameLike = `%${query.nameLike}%`
@@ -100,6 +88,20 @@ class Company {
       filters.clauses.push(`${filterToClause[filter]}${filterCount}`);
       filters.values.push(query[filter]);
       filterCount++;
+=======
+    // Build where clause if applicable
+    if (query !== undefined && Object.keys(query).length > 0) {
+      if ('nameLike' in query) {
+        query.nameLike = `%${query.nameLike}%`;
+      }
+      let filterCount = 1;
+      for (const filter in query) {
+        filters.clauses.push(`${filterToClause[filter]}${filterCount}`);
+        filters.values.push(query[filter]);
+        filterCount++;
+      }
+      whereClause = `WHERE ${filters.clauses.join('AND ')}`;
+>>>>>>> 8caf585c9be87872813c10f3704154c81b3d9ef3
     }
 
     const companiesRes = await db.query(`
@@ -109,7 +111,7 @@ class Company {
                num_employees AS "numEmployees",
                logo_url      AS "logoUrl"
         FROM companies
-        WHERE ${filters.clauses.join('AND ')}
+        ${whereClause}
         ORDER BY name`, filters.values);
     return companiesRes.rows;
   }
@@ -153,11 +155,11 @@ class Company {
 
   static async update(handle, data) {
     const { setCols, values } = sqlForPartialUpdate(
-        data,
-        {
-          numEmployees: "num_employees",
-          logoUrl: "logo_url",
-        });
+      data,
+      {
+        numEmployees: "num_employees",
+        logoUrl: "logo_url",
+      });
     const handleVarIdx = "$" + (values.length + 1);
 
     const querySql = `

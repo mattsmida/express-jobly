@@ -53,14 +53,9 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 router.get("/", async function (req, res, next) {
   console.log('running get companies, query:', req.query);
 
-  let companies;
   const queryParams = Object.keys(req.query);
 
-  if (queryParams.length === 0) {
-    companies = await Company.findAll();
-  }
-
-  else {
+  if (queryParams.length > 0) {
     const allowedFilters = ['nameLike', 'minEmployees', 'maxEmployees'];
     const nonallowedFilters = queryParams.filter(
       param => !allowedFilters.includes(param)
@@ -75,13 +70,13 @@ router.get("/", async function (req, res, next) {
     if ('minEmployees' in req.query && 'maxEmployees' in req.query
       && req.query.minEmployees > req.query.maxEmployees) {
 
-        throw new BadRequestError(
-          "minEmployees cannot be greater than maxEmployees"
-        )
+      throw new BadRequestError(
+        "minEmployees cannot be greater than maxEmployees"
+      );
     }
-
-    companies = await Company.search(req.query);
   }
+
+  const companies = await Company.findAll(req.query);
 
   return res.json({ companies });
 });
