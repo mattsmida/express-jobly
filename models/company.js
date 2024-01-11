@@ -72,23 +72,6 @@ class Company {
       'nameLike': 'name ILIKE $'
     };
 
-<<<<<<< HEAD
-    // Add wildcards for the necessary nameLike clause
-    if ('nameLike' in query) {
-      query.nameLike = `%${query.nameLike}%`
-    }
-
-    const filters = {
-      clauses: [],
-      values: []
-    }
-
-    let filterCount = 1;
-    for (const filter in query) {
-      filters.clauses.push(`${filterToClause[filter]}${filterCount}`);
-      filters.values.push(query[filter]);
-      filterCount++;
-=======
     // Build where clause if applicable
     if (query !== undefined && Object.keys(query).length > 0) {
       if ('nameLike' in query) {
@@ -101,7 +84,6 @@ class Company {
         filterCount++;
       }
       whereClause = `WHERE ${filters.clauses.join('AND ')}`;
->>>>>>> 8caf585c9be87872813c10f3704154c81b3d9ef3
     }
 
     const companiesRes = await db.query(`
