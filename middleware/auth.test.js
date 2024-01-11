@@ -6,6 +6,7 @@ const {
   authenticateJWT,
   ensureLoggedIn,
   ensureAdminLoggedIn,
+  ensureAdminOrSpecificUserLoggedIn,
 } = require("./auth");
 
 
@@ -101,30 +102,36 @@ describe("ensureAdminLoggedIn", function () {
 
 
 describe("ensureAdminOrSpecificUserLoggedIn", function () {
-  test("works", function () {
-    const req = {};
+  test("works for admin user", function () {
+    const req = { params: { username: 'test'} };
     const res = { locals: { user: { username: "testadmin", isAdmin: true } } };
     ensureAdminOrSpecificUserLoggedIn(req, res, next);
   });
 
-  test("rejects a non-admin user", function () {
-    const req = {};
+  test("works for non-admin user to modify self", function () {
+    const req = { params: { username: 'test'} };
     const res = { locals: { user: { username: "test", isAdmin: false } } };
-    expect(() => ensureAdminOrSpecificUser(req, res, next))
+    ensureAdminOrSpecificUserLoggedIn(req, res, next);
+  });
+
+  test("rejects a non-admin user modifying other user", function () {
+    const req = { params: { username: 'anothertest'} };
+    const res = { locals: { user: { username: "test", isAdmin: false } } };
+    expect(() => ensureAdminOrSpecificUserLoggedIn(req, res, next))
         .toThrow(UnauthorizedError);
   });
 
   test("unauth if no login", function () {
     const req = {};
     const res = { locals: {} };
-    expect(() => ensureAdminOrSpecificUser(req, res, next))
+    expect(() => ensureAdminOrSpecificUserLoggedIn(req, res, next))
         .toThrow(UnauthorizedError);
   });
 
   test("unauth if no valid login", function () {
     const req = {};
     const res = { locals: { user: { } } };
-    expect(() => ensureAdminOrSpecificUser(req, res, next))
+    expect(() => ensureAdminOrSpecificUserLoggedIn(req, res, next))
         .toThrow(UnauthorizedError);
   });
 });
