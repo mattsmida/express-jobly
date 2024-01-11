@@ -46,7 +46,9 @@ function ensureLoggedIn(req, res, next) {
  */
 
 function ensureAdminLoggedIn(req, res, next) {
-  if (res.locals.user?.username && res.locals.user?.isAdmin) return next();
+  if (res.locals.user?.username && res.locals.user?.isAdmin === true) {
+    return next();
+  }
   throw new UnauthorizedError();
 }
 
@@ -56,7 +58,9 @@ function ensureAdminLoggedIn(req, res, next) {
  */
 
 function ensureAdminOrSpecificUserLoggedIn(req, res, next) {
-  if (res.locals.user?.username && res.locals.user?.isAdmin) return next();
+  if (res.locals.user?.username && res.locals.user?.isAdmin === true) {
+    return next();
+  }
 
   if (res.locals.user?.username
     && res.locals.user.username === req.params.username) {
