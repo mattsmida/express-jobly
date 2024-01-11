@@ -40,6 +40,14 @@ function ensureLoggedIn(req, res, next) {
   throw new UnauthorizedError();
 }
 
+/** Middleware to use when they must be logged in as an admin.
+ *
+ * If not, raises Unauthorized.
+ */
+
+function ensureAdminLoggedIn(req, res, next) {
+  // TODO: Implement after writing tests.
+}
 
 module.exports = {
   authenticateJWT,
