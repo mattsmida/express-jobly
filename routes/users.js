@@ -6,7 +6,6 @@ const jsonschema = require("jsonschema");
 
 const express = require("express");
 const {
-  ensureLoggedIn,
   ensureAdminLoggedIn,
   ensureAdminOrSpecificUserLoggedIn,
 } = require("../middleware/auth");
