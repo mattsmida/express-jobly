@@ -85,6 +85,7 @@ class Company {
       'nameLike': 'name ILIKE $'
     };
 
+    // Add wildcards for the necessary nameLike clause
     if ('nameLike' in query) {
       query.nameLike = `%${query.nameLike}%`
     }

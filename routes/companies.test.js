@@ -101,8 +101,8 @@ describe("GET /companies", function () {
       .get("/companies")
       .query({
         nameLike: '1',
-        minEmployees: 1,
-        maxEmployees: 1,
+        minEmployees: '1',
+        maxEmployees: '1',
       });
 
     expect(resp.body).toEqual({
@@ -124,9 +124,9 @@ describe("GET /companies", function () {
       .get("/companies")
       .query({
           nameLike: '1',
-          minEmployees: 1,
-          maxEmployees: 1,
-          additionalField: 1
+          minEmployees: '1',
+          maxEmployees: '1',
+          additionalField: '1',
       });
 
     expect(resp.body).toEqual({
@@ -142,8 +142,8 @@ describe("GET /companies", function () {
       .get("/companies")
       .query({
           nameLike: '1',
-          minEmployees: 3,
-          maxEmployees: 1,
+          minEmployees: '3',
+          maxEmployees: '1',
       });
 
     expect(resp.body).toEqual({
