@@ -98,3 +98,33 @@ describe("ensureAdminLoggedIn", function () {
         .toThrow(UnauthorizedError);
   });
 });
+
+
+describe("ensureAdminOrSpecificUserLoggedIn", function () {
+  test("works", function () {
+    const req = {};
+    const res = { locals: { user: { username: "testadmin", isAdmin: true } } };
+    ensureAdminOrSpecificUserLoggedIn(req, res, next);
+  });
+
+  test("rejects a non-admin user", function () {
+    const req = {};
+    const res = { locals: { user: { username: "test", isAdmin: false } } };
+    expect(() => ensureAdminOrSpecificUser(req, res, next))
+        .toThrow(UnauthorizedError);
+  });
+
+  test("unauth if no login", function () {
+    const req = {};
+    const res = { locals: {} };
+    expect(() => ensureAdminOrSpecificUser(req, res, next))
+        .toThrow(UnauthorizedError);
+  });
+
+  test("unauth if no valid login", function () {
+    const req = {};
+    const res = { locals: { user: { } } };
+    expect(() => ensureAdminOrSpecificUser(req, res, next))
+        .toThrow(UnauthorizedError);
+  });
+});

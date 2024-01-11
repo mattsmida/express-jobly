@@ -50,6 +50,12 @@ function ensureAdminLoggedIn(req, res, next) {
   throw new UnauthorizedError();
 }
 
+//
+function ensureAdminOrSpecificUserLoggedIn(req, res, next) {
+  // Returns next if it's the current user or an admin,
+  // Unauth error if not.
+}
+
 module.exports = {
   authenticateJWT,
   ensureLoggedIn,
