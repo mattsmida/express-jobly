@@ -193,79 +193,77 @@ describe("get", function () {
 
 // /************************************** update */
 
-// describe("update", function () {
-//   const updateData = {
-//     name: "New",
-//     description: "New Description",
-//     numEmployees: 10,
-//     logoUrl: "http://new.img",
-//   };
+describe("update", function () {
+  const updateData = {
+    title: "New Title",
+    salary: 1001,
+    equity: "0.011",
+    companyHandle: "c3",
+  };
 
-//   test("works", async function () {
-//     let company = await Company.update("c1", updateData);
-//     expect(company).toEqual({
-//       handle: "c1",
-//       ...updateData,
-//     });
+  test("works", async function () {
+    const idResult = await db.query(`SELECT id FROM jobs WHERE title = 'j1';`);
+    const testJobId = idResult.rows[0].id;
+    let job = await Job.update(testJobId, updateData);
+    expect(job).toEqual({
+      id: testJobId,
+      ...updateData,
+    });
 
-//     const result = await db.query(
-//           `SELECT handle, name, description, num_employees, logo_url
-//            FROM companies
-//            WHERE handle = 'c1'`);
-//     expect(result.rows).toEqual([{
-//       handle: "c1",
-//       name: "New",
-//       description: "New Description",
-//       num_employees: 10,
-//       logo_url: "http://new.img",
-//     }]);
-//   });
+    const result = await db.query(
+          `SELECT title, salary, equity, company_handle
+           FROM jobs
+           WHERE id = ${testJobId}`);
+    expect(result.rows).toEqual([updateData]);
+  });
 
-//   test("works: null fields", async function () {
-//     const updateDataSetNulls = {
-//       name: "New",
-//       description: "New Description",
-//       numEmployees: null,
-//       logoUrl: null,
-//     };
+  // TODO: Continue here with more tests.
 
-//     let company = await Company.update("c1", updateDataSetNulls);
-//     expect(company).toEqual({
-//       handle: "c1",
-//       ...updateDataSetNulls,
-//     });
+  test("works: null fields", async function () {
+    const updateDataSetNulls = {
+      name: "New",
+      description: "New Description",
+      numEmployees: null,
+      logoUrl: null,
+    };
 
-//     const result = await db.query(
-//           `SELECT handle, name, description, num_employees, logo_url
-//            FROM companies
-//            WHERE handle = 'c1'`);
-//     expect(result.rows).toEqual([{
-//       handle: "c1",
-//       name: "New",
-//       description: "New Description",
-//       num_employees: null,
-//       logo_url: null,
-//     }]);
-//   });
+    let company = await Company.update("c1", updateDataSetNulls);
+    expect(company).toEqual({
+      handle: "c1",
+      ...updateDataSetNulls,
+    });
 
-//   test("not found if no such company", async function () {
-//     try {
-//       await Company.update("nope", updateData);
-//       throw new Error("fail test, you shouldn't get here");
-//     } catch (err) {
-//       expect(err instanceof NotFoundError).toBeTruthy();
-//     }
-//   });
+    const result = await db.query(
+          `SELECT handle, name, description, num_employees, logo_url
+           FROM companies
+           WHERE handle = 'c1'`);
+    expect(result.rows).toEqual([{
+      handle: "c1",
+      name: "New",
+      description: "New Description",
+      num_employees: null,
+      logo_url: null,
+    }]);
+  });
 
-//   test("bad request with no data", async function () {
-//     try {
-//       await Company.update("c1", {});
-//       throw new Error("fail test, you shouldn't get here");
-//     } catch (err) {
-//       expect(err instanceof BadRequestError).toBeTruthy();
-//     }
-//   });
-// });
+  test("not found if no such company", async function () {
+    try {
+      await Company.update("nope", updateData);
+      throw new Error("fail test, you shouldn't get here");
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+
+  test("bad request with no data", async function () {
+    try {
+      await Company.update("c1", {});
+      throw new Error("fail test, you shouldn't get here");
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+});
 
 // /************************************** remove */
 
