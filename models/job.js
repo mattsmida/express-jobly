@@ -45,33 +45,84 @@ class Job {
    *
    * Optional input query object with at least one of following keys:
    * { title, minSalary, hasEquity }
+   * Default as empty object.
    *
    * Returns [{ title, salary, equity, company_handle }, ...]
    * */
 
-  static async findAll(query) {
-    const whereClause = _buildWhereClause(query);
+  static async findAll(query = {}) {
+
+    const titleIncluded = 'title' in query;
+    const minSalaryIncluded = 'minSalary' in query;
+    const hasEquityIncluded = 'hasEquity' in query;
+
+    const dbQuery = this._buildDbQuery(
+      titleIncluded, minSalaryIncluded, hasEquityIncluded
+    );
+
+    let queryValues = [];
+    if (titleIncluded && minSalaryIncluded) {
+      queryValues = [`%${query.title}%`, query.minSalary];
+    }
+    else if (titleIncluded) {
+      queryValues = [`%${query.title}%`];
+    }
+    else if (minSalaryIncluded) {
+      queryValues = [query.minSalary];
+    }
+
+    console.log('query String', dbQuery);
+    console.log('query values', queryValues);
+
+    const result = await db.query(dbQuery, queryValues);
+
+    return result.rows;
   }
 
   /**
    *  Build the SQL necessary to query the database for jobs
    *  in the findAll function.
-   *  Input: query parameters as array
+   *  Input: booleans for whether query parameters are included
    *  Output: SQL statement as a string
    *
    *  E.g.,
    *  Input: [ titleIncluded, minSalaryIncluded, hasEquityIncluded ]
-   *  Output: 'SELECT title, salary, equity, company_handle
+   *  Output: 'SELECT title, salary, equity, company_handle AS "companyHandle"
    *           FROM jobs
    *           WHERE title ILIKE $1 AND
    *                 salary >= $2 AND
    *                 equity > 0
-   *           ORDER BY title;
+   *           ORDER BY title
    */
 
-   static _buildDbQuery(titleIncluded, minSalaryIncluded, hasEquityIncluded) {
+  static _buildDbQuery(titleIncluded, minSalaryIncluded, hasEquityIncluded) {
 
+    const whereClauses = [];
 
+    let valueCount = 1;
+    if (titleIncluded) {
+      whereClauses.push(`title ILIKE $${valueCount}`);
+      valueCount++;
+    }
+
+    if (minSalaryIncluded) {
+      whereClauses.push(`salary >= $${valueCount}`);
+      valueCount++;
+    }
+
+    if (hasEquityIncluded) {
+      whereClauses.push('equity > 0');
+    }
+
+    let whereClause = '';
+    if (whereClauses.length > 0) {
+      whereClause = `WHERE ${whereClauses.join(' AND ')}`;
+    }
+
+    return `SELECT title, salary, equity, company_handle AS "companyHandle"
+              FROM jobs
+              ${whereClause}
+              ORDER BY title`;
   }
 
 

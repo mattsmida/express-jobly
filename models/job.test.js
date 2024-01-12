@@ -137,7 +137,7 @@ describe("findAll", function () {
       minSalary: 1500
     };
     const jobs = await Job.findAll(query);
-    expect(companies).toEqual([
+    expect(jobs).toEqual([
       {
         title: "j2",
         salary: 2000,
@@ -155,11 +155,11 @@ describe("findAll", function () {
 
   test("works: no results", async function () {
     const query = {
-      title: 'asdfasdfasdf',
+      title: 'test non-existant job',
       minSalary: 999999
     };
     const jobs = await Job.findAll(query);
-    expect(companies).toEqual([]);
+    expect(jobs).toEqual([]);
   });
 
 });
