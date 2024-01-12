@@ -21,7 +21,7 @@ const router = new express.Router();
  *
  * Returns { handle, name, description, numEmployees, logoUrl }
  *
- * Authorization required: login
+ * Authorization required: admin login
  */
 
 router.post("/", ensureAdminLoggedIn, async function (req, res, next) {
