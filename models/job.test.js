@@ -28,14 +28,14 @@ describe("create", function () {
 
   test("works", async function () {
     const job = await Job.create(newJob);
-    expect(job).toEqual(newJob);
+    expect(job).toEqual({...newJob, id: expect.any(Number)});
 
     const result = await db.query(
-      `SELECT title, salary, equity, company_handle AS "companyHandle"
+      `SELECT id, title, salary, equity, company_handle AS "companyHandle"
            FROM jobs
            WHERE title = 'new'`);
     expect(result.rows).toEqual([
-      newJob,
+      {...newJob, id: expect.any(Number)}
     ]);
   });
 
@@ -44,12 +44,12 @@ describe("create", function () {
     await Job.create(newJob);
 
     const result = await db.query(
-      `SELECT title, salary, equity, company_handle AS "companyHandle"
+      `SELECT id, title, salary, equity, company_handle AS "companyHandle"
             FROM jobs
             WHERE title = 'new'`);
     expect(result.rows).toEqual([
-      newJob,
-      newJob,
+      {...newJob, id: expect.any(Number)},
+      {...newJob, id: expect.any(Number)}
     ]);
   });
 });

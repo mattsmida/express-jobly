@@ -24,6 +24,7 @@ class Job {
                                   company_handle)
                 VALUES ($1, $2, $3, $4)
                 RETURNING
+                    id,
                     title,
                     salary,
                     equity,
