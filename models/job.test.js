@@ -65,18 +65,21 @@ describe("findAll", function () {
         salary: 1000,
         equity: "0.01",
         companyHandle: 'c1',
+        id: expect.any(Number),
       },
       {
         title: "j2",
         salary: 2000,
         equity: "0.02",
         companyHandle: 'c2',
+        id: expect.any(Number),
       },
       {
         title: "j3",
         salary: 3000,
         equity: "0.03",
         companyHandle: 'c2',
+        id: expect.any(Number),
       },
     ]);
   });
@@ -94,12 +97,14 @@ describe("findAll", function () {
         salary: 2000,
         equity: "0.02",
         companyHandle: 'c2',
+        id: expect.any(Number),
       },
       {
         title: "j3",
         salary: 3000,
         equity: "0.03",
         companyHandle: 'c2',
+        id: expect.any(Number),
       },
     ]);
   });
@@ -115,18 +120,21 @@ describe("findAll", function () {
         salary: 1000,
         equity: "0.01",
         companyHandle: 'c1',
+        id: expect.any(Number),
       },
       {
         title: "j2",
         salary: 2000,
         equity: "0.02",
         companyHandle: 'c2',
+        id: expect.any(Number),
       },
       {
         title: "j3",
         salary: 3000,
         equity: "0.03",
         companyHandle: 'c2',
+        id: expect.any(Number),
       },
     ]);
   });
@@ -143,12 +151,14 @@ describe("findAll", function () {
         salary: 2000,
         equity: "0.02",
         companyHandle: 'c2',
+        id: expect.any(Number),
       },
       {
         title: "j3",
         salary: 3000,
         equity: "0.03",
         companyHandle: 'c2',
+        id: expect.any(Number),
       },
     ]);
   });
@@ -178,6 +188,7 @@ describe("get", function () {
       salary: 1000,
       equity: "0.01",
       companyHandle: "c1",
+      id: expect.any(Number),
     });
   });
 
@@ -204,14 +215,14 @@ describe("update", function () {
   test("works", async function () {
     const idResult = await db.query(`SELECT id FROM jobs WHERE title = 'j1';`);
     const testJobId = idResult.rows[0].id;
-    let job = await Job.update(testJobId, updateData);
-    expect(job).toEqual(updateData);
+    const job = await Job.update(testJobId, updateData);
+    expect(job).toEqual({...updateData, id: expect.any(Number)});
 
     const result = await db.query(
-          `SELECT title, salary, equity, company_handle AS "companyHandle"
+          `SELECT id, title, salary, equity, company_handle AS "companyHandle"
            FROM jobs
            WHERE id = ${testJobId}`);
-    expect(result.rows[0]).toEqual(updateData);
+    expect(result.rows[0]).toEqual({ ...updateData, id: expect.any(Number) });
   });
 
   test("works: null fields", async function () {
@@ -225,13 +236,15 @@ describe("update", function () {
     };
 
     let job = await Job.update(testJobId, updateDataSetNulls);
-    expect(job).toEqual(updateDataSetNulls);
+    expect(job).toEqual({ ...updateDataSetNulls, id: expect.any(Number) });
 
     const result = await db.query(
-      `SELECT title, salary, equity, company_handle AS "companyHandle"
+      `SELECT id, title, salary, equity, company_handle AS "companyHandle"
        FROM jobs
        WHERE id = ${testJobId}`);
-    expect(result.rows[0]).toEqual(updateDataSetNulls);
+    expect(result.rows[0]).toEqual(
+      { ...updateDataSetNulls, id: expect.any(Number) }
+    );
   });
 
   test("not found if no such company", async function () {

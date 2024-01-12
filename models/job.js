@@ -120,7 +120,7 @@ class Job {
       whereClause = `WHERE ${whereClauses.join(' AND ')}`;
     }
 
-    return `SELECT title, salary, equity, company_handle AS "companyHandle"
+    return `SELECT id, title, salary, equity, company_handle AS "companyHandle"
               FROM jobs
               ${whereClause}
               ORDER BY title`;
@@ -136,7 +136,8 @@ class Job {
 
   static async get(jobId) {
     const jobRes = await db.query(`
-        SELECT title,
+        SELECT id,
+               title,
                salary,
                equity,
                company_handle AS "companyHandle"
@@ -178,6 +179,7 @@ class Job {
         SET ${setCols}
         WHERE id = ${jobIdVarIdx}
         RETURNING
+            id,
             title,
             salary,
             equity,
