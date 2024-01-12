@@ -166,27 +166,30 @@ describe("findAll", function () {
 
 // /************************************** get */
 
-// describe("get", function () {
-//   test("works", async function () {
-//     let company = await Company.get("c1");
-//     expect(company).toEqual({
-//       handle: "c1",
-//       name: "C1",
-//       description: "Desc1",
-//       numEmployees: 1,
-//       logoUrl: "http://c1.img",
-//     });
-//   });
+describe("get", function () {
+  test("works", async function () {
+    const result = await db.query(`SELECT id FROM jobs WHERE title = 'j1';`)
+    const testJobId = result.rows[0].id;
 
-//   test("not found if no such company", async function () {
-//     try {
-//       await Company.get("nope");
-//       throw new Error("fail test, you shouldn't get here");
-//     } catch (err) {
-//       expect(err instanceof NotFoundError).toBeTruthy();
-//     }
-//   });
-// });
+    const job = await Job.get(testJobId);
+    console.log("******* testJobId: ", testJobId);
+    expect(job).toEqual({
+      title: "j1",
+      salary: 1000,
+      equity: "0.01",
+      companyHandle: "c1",
+    });
+  });
+
+  test("not found if no such job", async function () {
+    try {
+      await Job.get(0);
+      throw new Error("fail test, you shouldn't get here");
+    } catch (err) {
+      expect(err instanceof NotFoundError).toBeTruthy();
+    }
+  });
+});
 
 // /************************************** update */
 

@@ -41,7 +41,7 @@ class Job {
 
   /** Find all jobs.
    *
-   * Optional: Search for jos based on user's query.
+   * Optional: Search for jobs based on user's query.
    *
    * Optional input query object with at least one of following keys:
    * { title, minSalary, hasEquity }
@@ -126,30 +126,28 @@ class Job {
   }
 
 
-  // /** Given a company handle, return data about company.
+  // /** Given a job id, return data about that job.
   //  *
-  //  * Returns { handle, name, description, numEmployees, logoUrl, jobs }
-  //  *   where jobs is [{ id, title, salary, equity, companyHandle }, ...]
+  //  * Returns { title, salary, equity, company_handle }
   //  *
   //  * Throws NotFoundError if not found.
   //  **/
 
-  // static async get(handle) {
-  //   const companyRes = await db.query(`
-  //       SELECT handle,
-  //              name,
-  //              description,
-  //              num_employees AS "numEmployees",
-  //              logo_url      AS "logoUrl"
-  //       FROM companies
-  //       WHERE handle = $1`, [handle]);
+  static async get(jobId) {
+    const jobRes = await db.query(`
+        SELECT title,
+               salary,
+               equity,
+               company_handle AS "companyHandle"
+        FROM jobs
+        WHERE id = $1`, [jobId]);
 
-  //   const company = companyRes.rows[0];
+    const job = jobRes.rows[0];
 
-  //   if (!company) throw new NotFoundError(`No company: ${handle}`);
+    if (!job) throw new NotFoundError(`No job: ${jobId}`);
 
-  //   return company;
-  // }
+    return job;
+  }
 
   // /** Update company data with `data`.
   //  *
