@@ -1,33 +1,33 @@
 "use strict";
 
-/** Routes for companies. */
+/** Routes for jobs. */
 
 const jsonschema = require("jsonschema");
 const express = require("express");
 
 const { BadRequestError } = require("../expressError");
 const { ensureAdminLoggedIn } = require("../middleware/auth");
-const Company = require("../models/company");
+const Job = require("../models/job");
 
-const companyNewSchema = require("../schemas/companyNew.json");
-const companyUpdateSchema = require("../schemas/companyUpdate.json");
+const jobNewSchema = require("../schemas/jobNew.json");
+const jobUpdateSchema = require("../schemas/jobUpdate.json");
 
 const router = new express.Router();
 
 
-/** POST / { company } =>  { company }
+/** POST / { job } =>  { job }
  *
- * company should be { handle, name, description, numEmployees, logoUrl }
+ * job should be { title, equity, companyHandle, salary }
  *
- * Returns { handle, name, description, numEmployees, logoUrl }
+ * Returns { title, equity, companyHandle, salary }
  *
- * Authorization required: login
+ * Authorization required: admin login
  */
 
 router.post("/", ensureAdminLoggedIn, async function (req, res, next) {
   const validator = jsonschema.validate(
     req.body,
-    companyNewSchema,
+    jobNewSchema,
     { required: true }
   );
   if (!validator.valid) {
@@ -35,8 +35,8 @@ router.post("/", ensureAdminLoggedIn, async function (req, res, next) {
     throw new BadRequestError(errs);
   }
 
-  const company = await Company.create(req.body);
-  return res.status(201).json({ company });
+  const job = await Job.create(req.body);
+  return res.status(201).json({ job });
 });
 
 /** GET /  =>
