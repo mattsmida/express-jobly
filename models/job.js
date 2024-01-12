@@ -39,53 +39,41 @@ class Job {
     return job;
   }
 
-  /** Find all companies.
+  /** Find all jobs.
    *
-   * Optional: Search for companies based on user's query.
+   * Optional: Search for jos based on user's query.
    *
    * Optional input query object with at least one of following keys:
-   * { minEmployees, maxEmployees, nameLike }
+   * { title, minSalary, hasEquity }
    *
-   * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
+   * Returns [{ title, salary, equity, company_handle }, ...]
    * */
 
-  // static async findAll(query) {
-  //   let whereClause = '';
-  //   const filters = {
-  //     clauses: [],
-  //     values: []
-  //   };
-  //   const filterToClause = {
-  //     'minEmployees': 'num_employees >= $',
-  //     'maxEmployees': 'num_employees <= $',
-  //     'nameLike': 'name ILIKE $'
-  //   };
+  static async findAll(query) {
+    const whereClause = _buildWhereClause(query);
+  }
 
-  //   // Build where clause if applicable
-  //   if (query !== undefined && Object.keys(query).length > 0) {
-  //     if ('nameLike' in query) {
-  //       query.nameLike = `%${query.nameLike}%`;
-  //     }
-  //     let filterCount = 1;
-  //     for (const filter in query) {
-  //       filters.clauses.push(`${filterToClause[filter]}${filterCount}`);
-  //       filters.values.push(query[filter]);
-  //       filterCount++;
-  //     }
-  //     whereClause = `WHERE ${filters.clauses.join('AND ')}`;
-  //   }
+  /**
+   *  Build the SQL necessary to query the database for jobs
+   *  in the findAll function.
+   *  Input: query parameters as array
+   *  Output: SQL statement as a string
+   *
+   *  E.g.,
+   *  Input: [ titleIncluded, minSalaryIncluded, hasEquityIncluded ]
+   *  Output: 'SELECT title, salary, equity, company_handle
+   *           FROM jobs
+   *           WHERE title ILIKE $1 AND
+   *                 salary >= $2 AND
+   *                 equity > 0
+   *           ORDER BY title;
+   */
 
-  //   const companiesRes = await db.query(`
-  //       SELECT handle,
-  //              name,
-  //              description,
-  //              num_employees AS "numEmployees",
-  //              logo_url      AS "logoUrl"
-  //       FROM companies
-  //       ${whereClause}
-  //       ORDER BY name`, filters.values);
-  //   return companiesRes.rows;
-  // }
+   static _buildDbQuery(titleIncluded, minSalaryIncluded, hasEquityIncluded) {
+
+
+  }
+
 
   // /** Given a company handle, return data about company.
   //  *

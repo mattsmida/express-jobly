@@ -153,6 +153,15 @@ describe("findAll", function () {
     ]);
   });
 
+  test("works: no results", async function () {
+    const query = {
+      title: 'asdfasdfasdf',
+      minSalary: 999999
+    };
+    const jobs = await Job.findAll(query);
+    expect(companies).toEqual([]);
+  });
+
 });
 
 // /************************************** get */
