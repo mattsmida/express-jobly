@@ -28,14 +28,14 @@ describe("create", function () {
 
   test("works", async function () {
     const job = await Job.create(newJob);
-    expect(job).toEqual({...newJob, id: expect.any(Number)});
+    expect(job).toEqual({ ...newJob, id: expect.any(Number) });
 
     const result = await db.query(
       `SELECT id, title, salary, equity, company_handle AS "companyHandle"
            FROM jobs
            WHERE title = 'new'`);
     expect(result.rows).toEqual([
-      {...newJob, id: expect.any(Number)}
+      { ...newJob, id: expect.any(Number) }
     ]);
   });
 
@@ -48,8 +48,8 @@ describe("create", function () {
             FROM jobs
             WHERE title = 'new'`);
     expect(result.rows).toEqual([
-      {...newJob, id: expect.any(Number)},
-      {...newJob, id: expect.any(Number)}
+      { ...newJob, id: expect.any(Number) },
+      { ...newJob, id: expect.any(Number) }
     ]);
   });
 });
@@ -178,7 +178,7 @@ describe("findAll", function () {
 
 describe("get", function () {
   test("works", async function () {
-    const result = await db.query(`SELECT id FROM jobs WHERE title = 'j1';`)
+    const result = await db.query(`SELECT id FROM jobs WHERE title = 'j1';`);
     const testJobId = result.rows[0].id;
 
     const job = await Job.get(testJobId);
@@ -216,10 +216,10 @@ describe("update", function () {
     const idResult = await db.query(`SELECT id FROM jobs WHERE title = 'j1';`);
     const testJobId = idResult.rows[0].id;
     const job = await Job.update(testJobId, updateData);
-    expect(job).toEqual({...updateData, id: expect.any(Number)});
+    expect(job).toEqual({ ...updateData, id: expect.any(Number) });
 
     const result = await db.query(
-          `SELECT id, title, salary, equity, company_handle AS "companyHandle"
+      `SELECT id, title, salary, equity, company_handle AS "companyHandle"
            FROM jobs
            WHERE id = ${testJobId}`);
     expect(result.rows[0]).toEqual({ ...updateData, id: expect.any(Number) });
@@ -278,7 +278,7 @@ describe("remove", function () {
 
     await Job.remove(testJobId);
     const res = await db.query(
-        `SELECT id FROM jobs WHERE id=${testJobId}`);
+      `SELECT id FROM jobs WHERE id=${testJobId}`);
     expect(res.rows.length).toEqual(0);
   });
 
