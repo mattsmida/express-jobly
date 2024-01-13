@@ -19,7 +19,7 @@ const router = new express.Router();
  *
  * job should be { title, equity, companyHandle, salary }
  *
- * Returns { title, equity, companyHandle, salary }
+ * Returns { id, title, equity, companyHandle, salary }
  *
  * Authorization required: admin login
  */
@@ -40,45 +40,43 @@ router.post("/", ensureAdminLoggedIn, async function (req, res, next) {
 });
 
 /** GET /  =>
- *   { companies: [ { handle, name, description, numEmployees, logoUrl }, ...] }
+ *   { jobs: [ { id, title, equity, companyHandle, salary }, ...] }
  *
- * Can filter on provided search filters:
- * - minEmployees
- * - maxEmployees
- * - nameLike (will find case-insensitive, partial matches)
+ * Can filter on one or more of optional provided search filters:
+ * - title (will find case-insensitive, partial matches)
+ * - minSalary
+ * - hasEquity
  *
  * Authorization required: none
  */
 
 router.get("/", async function (req, res, next) {
-  console.log('running get companies, query:', req.query);
+  console.log('running get jobs, query:', req.query);
 
-  const queryParams = Object.keys(req.query);
+  // const queryParams = Object.keys(req.query);
 
-  if (queryParams.length > 0) {
-    const allowedFilters = ['nameLike', 'minEmployees', 'maxEmployees'];
-    const nonallowedFilters = queryParams.filter(
-      param => !allowedFilters.includes(param)
-    );
+  // if (queryParams.length > 0) {
+  //   const allowedFilters = ['title', 'minSalary', 'hasEquity'];
+  //   const nonallowedFilters = queryParams.filter(
+  //     param => !allowedFilters.includes(param)
+  //   );
 
-    if (nonallowedFilters.length > 0) {
-      throw new BadRequestError(
-        "Allowed search fields: nameLike, minEmployees, maxEmployees"
-      );
-    }
+  //   if (nonallowedFilters.length > 0) {
+  //     throw new BadRequestError(
+  //       "Allowed search fields: title, minSalary, maxEmployees"
+  //     );
+  //   }
+  // }
 
-    if ('minEmployees' in req.query && 'maxEmployees' in req.query
-      && req.query.minEmployees > req.query.maxEmployees) {
+  // let query = req.query;
 
-      throw new BadRequestError(
-        "minEmployees cannot be greater than maxEmployees"
-      );
-    }
-  }
+  // if (req.query === null) {
+  //   query = {};
+  // }
 
-  const companies = await Company.findAll(req.query);
-
-  return res.json({ companies });
+  const jobs = await Job.findAll();
+  console.log('jobs',jobs)
+  return res.json({ jobs });
 });
 
 /** GET /[handle]  =>  { company }

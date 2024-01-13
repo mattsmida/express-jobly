@@ -83,6 +83,7 @@ describe("POST /jobs", function () {
 describe("GET /jobs", function () {
   test("ok for anon", async function () {
     const resp = await request(app).get("/jobs");
+    console.log('respbody', resp.body)
     expect(resp.body).toEqual({
       jobs:
         [

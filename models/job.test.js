@@ -59,6 +59,7 @@ describe("create", function () {
 describe("findAll", function () {
   test("works: no filter", async function () {
     const jobs = await Job.findAll();
+    console.log('jobs in job.test.js', jobs)
     expect(jobs).toEqual([
       {
         title: "j1",
