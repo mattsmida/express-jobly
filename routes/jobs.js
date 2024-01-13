@@ -53,43 +53,42 @@ router.post("/", ensureAdminLoggedIn, async function (req, res, next) {
 router.get("/", async function (req, res, next) {
   console.log('running get jobs, query:', req.query);
 
-  // const queryParams = Object.keys(req.query);
+  const queryParams = Object.keys(req.query);
 
-  // if (queryParams.length > 0) {
-  //   const allowedFilters = ['title', 'minSalary', 'hasEquity'];
-  //   const nonallowedFilters = queryParams.filter(
-  //     param => !allowedFilters.includes(param)
-  //   );
+  if (queryParams.length > 0) {
+    const allowedFilters = ['title', 'minSalary', 'hasEquity'];
+    const nonallowedFilters = queryParams.filter(
+      param => !allowedFilters.includes(param)
+    );
 
-  //   if (nonallowedFilters.length > 0) {
-  //     throw new BadRequestError(
-  //       "Allowed search fields: title, minSalary, maxEmployees"
-  //     );
-  //   }
-  // }
+    if (nonallowedFilters.length > 0) {
+      throw new BadRequestError(
+        "Allowed search fields: title, minSalary, maxEmployees"
+      );
+    }
+  }
 
-  // let query = req.query;
+  let query = req.query;
 
-  // if (req.query === null) {
-  //   query = {};
-  // }
+  if (req.query === null) {
+    query = {};
+  }
 
-  const jobs = await Job.findAll();
+  const jobs = await Job.findAll(query);
   console.log('jobs',jobs)
   return res.json({ jobs });
 });
 
-/** GET /[handle]  =>  { company }
+/** GET /[id]=>  { id }
  *
- *  Company is { handle, name, description, numEmployees, logoUrl, jobs }
- *   where jobs is [{ id, title, salary, equity }, ...]
+ *  Job is { id, title, equity, companyHandle, salary }
  *
  * Authorization required: none
  */
 
-router.get("/:handle", async function (req, res, next) {
-  const company = await Company.get(req.params.handle);
-  return res.json({ company });
+router.get("/:id", async function (req, res, next) {
+  const job = await Job.get(req.params.id);
+  return res.json({ job });
 });
 
 /** PATCH /[handle] { fld1, fld2, ... } => { company }

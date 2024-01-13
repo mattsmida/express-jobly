@@ -57,7 +57,7 @@ class Job {
     const minSalaryIncluded = 'minSalary' in query;
     const hasEquityIncluded = 'hasEquity' in query;
 
-    const dbQuery = this._buildDbQuery(
+    let dbQuery = this._buildDbQuery(
       titleIncluded, minSalaryIncluded, hasEquityIncluded
     );
 
@@ -75,7 +75,10 @@ class Job {
     console.log('query String', dbQuery);
     console.log('query values', queryValues);
 
+
+    dbQuery = 'SELECT * FROM jobs';
     const result = await db.query(dbQuery, queryValues);
+    console.log("********************* result of findAll: ***", result);
 
     return result.rows;
   }
